@@ -1,0 +1,20 @@
+package com.langtaojin.adgaga.tclog;
+
+message UserTrac {
+    optional string     click_id        = 1;
+    optional string     muid            = 2;
+    optional string     xxid            = 3;
+    optional int32      utrac_eid       = 4;
+    optional bool       is_landing      = 5;
+    optional bool       is_from_ad      = 6;
+    optional uint32     ip              = 7;
+    optional uint32     time            = 8;
+    optional string     char_code       = 9;
+    optional string     resolution      = 10;
+    optional string     color_depth     = 11;
+    optional string     page_title      = 12;
+    optional string     page_url        = 13;
+    optional string     page_host       = 14;
+    optional string     page_path       = 15;
+    optional string     click_hash      = 16;
+};

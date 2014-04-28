@@ -1,0 +1,23 @@
+== prepare ~/.pypirc ==
+
+[distutils]
+index-servers =
+    pypi
+    ltj
+
+[pypi]
+username:user
+password:secret
+
+[ltj]
+username:username
+password:password
+repository:http://adweb1:8000/pypi/
+
+== upload ==
+
+python setup.py register -r ltj sdist upload -r ltj
+
+== install/update ==
+
+pip install -U -b /tmp --extra-index-url http://adweb1:8000/pypi/ pygaga

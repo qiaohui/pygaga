@@ -1,0 +1,2 @@
+include pygaga/corpus/*
+include pygaga/model/r/*.r

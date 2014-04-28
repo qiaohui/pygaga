@@ -1,0 +1,12 @@
+*~
+*.pyc
+.*.swp
+*.o
+tags
+*.a
+*.d
+Thumbs.db
+build
+dist
+pygaga.egg-info
+

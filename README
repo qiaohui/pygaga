@@ -1,0 +1,61 @@
+PYGAGA model
+=====
+This is a howto doc for pygaga.
+
+Prerequest
+=====
+Liblinear with weight
+------
+	wget http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/weights/liblinear-weights-1.8.zip
+	unzip liblinear-weights-1.8.zip
+	cd liblinear-weights-1.8
+	make
+	sudo cp train /usr/local/bin/liblinear_train
+	sudo cp predict /usr/local/bin/liblinear_predict
+
+SVDLIBC
+------
+	wget http://tedlab.mit.edu/~dr/SVDLIBC/svdlibc.tgz
+	tar zxvf svdlibc.tgz
+	cd SVDLIBC
+	# edit Makefile remove march section
+	make
+    sudo cp svd /usr/local/bin
+
+R
+------
+	sudo apt-get install r-core
+
+PYTST
+------
+	git clone git://github.com/nlehuen/pytst.git
+	cd pytst/python
+	sudo python setup.py install
+    # note: pytst not supported under pypy
+
+CMMSEG
+------
+	git clone git@github.com:fakechris/mmseg-clone-from-coreseek.git
+	cd mmseg-clone-from-coreseek
+	./bootstrap; ./configure; sudo make install
+	cd python; sudo python setup.py install
+    # note: cmmseg not supported under pypy
+
+Build Egg and Install
+====
+python setup.py bdist_egg; python setup.py install
+
+Corpus
+=====
+qqwry.dat
+-----
+需要定期更新pygaga/corpus/qqwry.dat
+
+
+Tools
+=====
+ip2.py
+------
+	usage:
+	echo "211.100.48.102" | ip2.py
+	ip2.py iplist.txt

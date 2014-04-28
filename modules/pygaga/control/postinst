@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+INSTDIR=/space/egg
+
+PYGAGA_EGG_NAME=`cat $INSTDIR/pygaga_distname`
+easy_install $INSTDIR/dist/$PYGAGA_EGG_NAME
+

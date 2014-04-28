@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+
+from rc4decrypt import rc4decrypt
+import adinfo_pb2
+import base64
+
+def parse_encmsg(msg, decrypt=False):
+    encpart = msg.ljust(((len(msg)+3)/4)*4, '=')
+    decpart = base64.urlsafe_b64decode(encpart)
+    if decrypt:
+        return rc4decrypt(decpart)
+    return decpart
+
+def decode_pv(msg):
+    pv_obj = adinfo_pb2.RenderInfo()
+    pv_obj.ParseFromString(parse_encmsg(msg))
+    return pv_obj
+
+def decode_click_ex(msg):
+    clkex_obj = adinfo_pb2.ClickInfoEx()
+    clkex_obj.ParseFromString(parse_encmsg(msg))
+    return clkex_obj
+
+
+def decode_click(msg):
+    clk_obj = adinfo_pb2.ClickInfo()
+    clk_obj.ParseFromString(parse_encmsg(msg, decrypt=True))
+    return clk_obj
+
+
+def test():
+    f = open('/space/log/scribe/click/click-2011-07-27_00044')
+    i = 0
+    for line in f:
+        vl = line.rstrip().split(' ')
+        decode_click_ex(vl[1])
+        decode_click(vl[2])
+        i += 1
+
+if __name__ == '__main__':
+    print decode_pv('''CuABCiMI_NUCEPFdGK6IAiDwkwkokU4wATi-TkCYMUkAAE6TmXFjQBK4AWh0dHA6Ly9jbGljay5tei5zaW1iYS50YW9iYW8uY29tL3JkP2Y9aHR0cCUzQSUyRiUyRnJlLnRhb2Jhby5jb20lMkZzZWFyY2glM0ZfaW5wdXRfY2hhcnNldCUzRHV0Zi04JTI2cmVmcGlkJTNEbW1fMjQ1MTc2NjhfMjM0NTk0N185MDY4OTc3JTI2Y2F0aWQlM0QxNjIxMTYlMjNMaXN0VmlldyZrPWM2MjQxNzM2MTE0MDVhNjYKkgEKIwihiQMQ8V0YpboCIPCTCSiRTjACOL5OQJgxSQAAs46Z1WJAEmtodHRwOi8vcmUudGFvYmFvLmNvbS9zZWFyY2g_X2lucHV0X2NoYXJzZXQ9dXRmLTgmcmVmcGlkPW1tXzI0NTE3NjY4XzIzNDU5NDdfOTA2ODk3NyZjYXRpZD01MDAxMDg1MCNMaXN0VmlldwriAQojCKCJAxDxXRikugIg8JMJKJFOMAM4vk5AmDFJAACzjpnVYkASugFodHRwOi8vY2xpY2subXouc2ltYmEudGFvYmFvLmNvbS9yZD9mPWh0dHAlM0ElMkYlMkZyZS50YW9iYW8uY29tJTJGc2VhcmNoJTNGX2lucHV0X2NoYXJzZXQlM0R1dGYtOCUyNnJlZnBpZCUzRG1tXzI0NTE3NjY4XzIzNDU5NDdfOTA2ODk3NyUyNmNhdGlkJTNENTAwMTE5ODElMjNMaXN0VmlldyZrPWM2MjQxNzM2MTE0MDVhNjYKkgEKIwifiQMQ8V0Yo7oCIPCTCSiRTjAEOL5OQJgxSQAAs46Z1WJAEmtodHRwOi8vcmUudGFvYmFvLmNvbS9zZWFyY2g_X2lucHV0X2NoYXJzZXQ9dXRmLTgmcmVmcGlkPW1tXzI0NTE3NjY4XzIzNDU5NDdfOTA2ODk3NyZjYXRpZD01MDAwMDY3MSNMaXN0VmlldwqFAgojCJyJAxDxXRiiugIg8JMJKJFOMAU4vk5AmDFJAACzjpnVYkAS3QFodHRwOi8vY2xpY2subXouc2ltYmEudGFvYmFvLmNvbS9yZD9mPWh0dHAlM0ElMkYlMkZyZS50YW9iYW8uY29tJTJGc2VhcmNoJTNGX2lucHV0X2NoYXJzZXQlM0R1dGYtOCUyNnJlZnBpZCUzRG1tXzI0NTE3NjY4XzIzNDU5NDdfOTA2ODk3NyUyNmNhdGlkJTNEJTI2a2V5d29yZCUzRCUyNUU2JTI1ODklMjU4QiUyNUU2JTI1OUMlMjVCQSUyM0xpc3RWaWV3Jms9YzYyNDE3MzYxMTQwNWE2NgqSAQojCJuJAxDxXRihugIg8JMJKJFOMAY4vk5AmDFJAACzjpnVYkASa2h0dHA6Ly9yZS50YW9iYW8uY29tL3NlYXJjaD9faW5wdXRfY2hhcnNldD11dGYtOCZyZWZwaWQ9bW1fMjQ1MTc2NjhfMjM0NTk0N185MDY4OTc3JmNhdGlkPTUwMDA2ODQyI0xpc3RWaWV3Co4BCiMInYkDEPFdGKC6AiDwkwkokU4wBzi-TkCYMUkAALOOmdViQBJnaHR0cDovL3JlLnRhb2Jhby5jb20vc2VhcmNoP19pbnB1dF9jaGFyc2V0PXV0Zi04JnJlZnBpZD1tbV8yNDUxNzY2OF8yMzQ1OTQ3XzkwNjg5NzcmY2F0aWQ9MTEwMSNMaXN0VmlldwqUAgojCJmJAxDxXRifugIg8JMJKJFOMAg4vk5AmDFJAACzjpnVYkAS7AFodHRwOi8vY2xpY2subXouc2ltYmEudGFvYmFvLmNvbS9yZD9mPWh0dHAlM0ElMkYlMkZyZS50YW9iYW8uY29tJTJGc2VhcmNoJTNGX2lucHV0X2NoYXJzZXQlM0R1dGYtOCUyNnJlZnBpZCUzRG1tXzI0NTE3NjY4XzIzNDU5NDdfOTA2ODk3NyUyNmNhdGlkJTNEJTI2a2V5d29yZCUzRCUyNUU5JTI1OTglMjVCMiUyNUU2JTI1OTklMjU5MiUyNUU5JTI1OUMlMjU5QyUyM0xpc3RWaWV3Jms9YzYyNDE3MzYxMTQwNWE2NhIaCJBOEJ308LsHGKafxuwEIJOjqrACMABItk4a3gEKABIWTnoxazAwMlJqU2hNa0NhWU1sN0hBZxp3aHR0cDovL2h1YW5xaXUuYWxseWVzLmNvbS9tYWluL2FkZnNob3c_dXNlcj1odWFucWl1fHhpbndlbmxlaW5laXJvbmd5ZXwwMmppYW9kaWFudHUzMDAyNTAmZGI9aHVhbnFpdSZib3JkZXI9MCZsb2NhbD15ZXMiSU1vemlsbGEvNC4wIChjb21wYXRpYmxlOyBNU0lFIDguMDsgV2luZG93cyBOVCA1LjE7IFRyaWRlbnQvNC4wOyBiYWlkdWllOCkiEggAGAAgADIICDwQARgIIAE4AygA''')
+    print decode_click_ex('''CowBCgASFk56MWswMDJSbHJsUUJGbzhNNHl5QWcaImh0dHA6Ly93d3cudWN0cmFjLmNvbS9qcy8xMDA2MC5zd2YiTE1vemlsbGEvNC4wIChjb21wYXRpYmxlOyBNU0lFIDYuMDsgV2luZG93cyBOVCA1LjE7IFNWMTsgVGVuY2VudFRyYXZlbGVyIDQuMCkQva3G7AQYqrzc0A0iLWh0dHA6Ly93d3cudHVhbjgwMC5jb20vZGVhbC9xdWFuZ3VveW91XzI5NzY4Mw''')
+    print decode_click('''3cZwsCRN8lAlTny3f75i2uQ6kMWToAnmo24u9J9khQa1kjzdki_BHzmuTMCr1bkdirSJpJmTPGzxk_56eukP7KdkcDXFBPWxH0dje3w''')
+
+    test()
+
